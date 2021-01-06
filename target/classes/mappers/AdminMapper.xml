@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbs.mappers.AdminMapper">
+	<!-- 회원목록 -->
+	<select id="getMemberList" resultType="RegisterVO">
+		select *
+		from `SW_201844013`.`user`
+		where user_id != "admin"
+		order by user_id
+	</select>
+	
+	<delete id="deleteUser">
+		delete from `SW_201844013`.`user`
+		where user_id = #{userId}
+	</delete>
+	
+	<select id="getReservationList" resultType="ReservationVO">
+		select user_id, reservation_date, reservation_no, product_name, place_name, seat_no, performance_date, performance_round, performance_start, product_price
+		from `SW_201844013`.`reservation`, `SW_201844013`.`product`, `SW_201844013`.`place`, `SW_201844013`.`performance`
+		where `SW_201844013`.`reservation`.product_no = `SW_201844013`.`product`.product_no
+		and `SW_201844013`.`reservation`.place_no = `SW_201844013`.`place`.place_no
+		and `SW_201844013`.`reservation`.performance_no = `SW_201844013`.`performance`.performance_no
+		order by reservation_date desc
+	</select>
+	
+	<delete id="deleteProduct">
+		delete from `SW_201844013`.`product`
+		where `SW_201844013`.`product`.product_no = #{prouctNo}
+	</delete>
+	
+	<insert id="addProduct">
+		insert into `SW_201844013`.`product` (category_no, product_name, product_price, product_rating, product_appearance,
+		 product_runningtime, product_start_date, product_end_date)
+		values (#{categoryNo}, #{productName}, #{productPrice}, #{productRating}, #{productAppearance},
+		 #{productRunningTime}, #{productStartDate}, #{productEndDate})
+	</insert>
+	
+	<select id="getProductNo" resultType="java.lang.Integer">
+		select product_no
+		from `SW_201844013`.`product`
+		where product_name = #{productName}
+	</select>
+	
+	<insert id="addPlace">
+		insert into `SW_201844013`.`place` (product_no, place_name, place_street, place_lot, place_tel)
+		values (#{productNo}, #{placeName}, #{placeStreet}, #{placeLot}, #{placeTel})
+	</insert>
+	
+	<insert id="addPerformance">
+		insert into `SW_201844013`.`performance` (product_no, performance_date, performance_round, performance_start)
+		values (#{productNo}, #{performanceDate}, #{performanceRound}, #{performanceStart})
+	</insert>
+	
+	<insert id="addProductImage">
+		insert into `SW_201844013`.`product_image` (product_no, thumbnail)
+		values (#{productNo}, #{thumbnail})
+	</insert>
+	<select id="getProductContent" resultType="ProductVO">
+		select *
+		from `SW_201844013`.`product`, `SW_201844013`.`place`, `SW_201844013`.`product_image`
+		where `SW_201844013`.`product`.product_no = #{productNo}
+		and `SW_201844013`.`product`.product_no = `SW_201844013`.`place`.product_no
+		and `SW_201844013`.`product`.product_no = `SW_201844013`.`product_image`.product_no
+	</select>
+	
+	<select id="getCategoryList" resultType="CategoryVO">
+		select *
+		from `SW_201844013`.`category`
+	</select>
+	
+	<update id="updateProductPost">
+		update `SW_201844013`.`product`
+		set category_no = #{categoryNo},
+			product_name = #{productName},
+			product_price = #{productPrice},
+			product_rating = #{productRating},
+			product_runningtime = #{productRunningTime},
+			product_appearance = #{productAppearance},
+			product_start_date = #{productStartDate},
+			product_end_date = #{productEndDate}
+		where product_no = #{productNo}
+	</update>
+	
+	<update id="updatePlace">
+		update `SW_201844013`.`place`
+		set place_name = #{placeName},
+			place_street = #{placeStreet},
+			place_lot = #{placeLot},
+			place_tel = #{placeTel}
+		where product_no = #{productNo}
+	</update>
+	<update id="updateProductImage">
+		update `SW_201844013`.`product_image`
+		set thumbnail = #{thumbnail}
+		where product_no = #{productNo}
+	</update>
+</mapper>

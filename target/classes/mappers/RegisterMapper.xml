@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbs.mappers.registerMapper">
+	<insert id="addUser">
+		insert into `SW_201844013`.`user`
+		values (#{userId}, #{userPassword}, #{userName}, #{userPhone}, #{userAddress})
+	</insert>
+	
+	<select id="getOverlapUserId" resultType="java.lang.Integer">
+		select count(user_id)
+		from `SW_201844013`.`user`
+		where user_id = #{userId}
+	</select>
+</mapper>

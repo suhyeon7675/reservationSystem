@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbs.mappers.ReservationMapper">
+	<!-- 예매내역 -->
+	<select id="getReservationList" resultType="ReservationVO">
+		select user_id, reservation_date, reservation_no, product_name, place_name, seat_no, performance_date, performance_round, performance_start, product_price, `SW_201844013`.`performance`.performance_no
+		from `SW_201844013`.`reservation`, `SW_201844013`.`product`, `SW_201844013`.`place`, `SW_201844013`.`performance`
+		where user_id = #{userId}
+		and `SW_201844013`.`reservation`.product_no = `SW_201844013`.`product`.product_no
+		and `SW_201844013`.`reservation`.place_no = `SW_201844013`.`place`.place_no
+		and `SW_201844013`.`reservation`.performance_no = `SW_201844013`.`performance`.performance_no
+		order by reservation_date desc
+	</select>
+	
+	<delete id="cancelReservation">
+		delete from `SW_201844013`.`reservation`
+		where reservation_no = #{reservationNo}
+	</delete>
+	
+	<update id="cancelSeat">
+		update `SW_201844013`.`seat`
+		set seat_status = 1
+		where performance_no = #{performanceNo}
+		and seat_no = (select 'seat_no'
+						from `SW_201844013`.`reservation` 
+						where reservation_no = #{reservationNo})
+	</update>
+	
+	<select id="getSeatList" resultType="seatVO">
+		select *
+		from `SW_201844013`.`seat`
+		where performance_no = #{performanceNo}
+	</select>
+	
+	<insert id="addReservation">
+		insert into `SW_201844013`.`reservation` (product_no, place_no, performance_no, user_id, seat_no, reservation_date, cancel_flag)
+		values (#{productNo}, #{placeNo}, #{performanceNo}, #{userId}, #{seatNo}, now(), 1)
+	</insert>
+	<update id="updateSeat">
+		update `SW_201844013`.`seat`
+		set seat_status = 0
+		where performance_no = #{performanceNo}
+		and seat_no = #{seatNo}
+	</update>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbs.mappers.ProductMapper">
+   	<select id="getProductList" resultType="ProductVO">
+      	select `SW_201844013`.`product`.product_no, product_name, product_price, product_rating, product_appearance, product_runningtime, product_start_date, product_end_date, place_name, place_lot, place_street, place_tel, thumbnail, description 
+      	from `SW_201844013`.`product`, `SW_201844013`.`place`, `SW_201844013`.`product_image`
+      	where `SW_201844013`.`product`.category_no = #{proCategory}
+      	and `SW_201844013`.`product`.product_no = `SW_201844013`.`place`.product_no
+      	and `SW_201844013`.`product`.product_no = `SW_201844013`.`product_image`.product_no
+      	order by `SW_201844013`.`product`.product_no desc
+   	</select>
+	   
+   	<select id="getProductDetail" resultType="ProductVO">
+   		select *
+   		from `SW_201844013`.`product`, `SW_201844013`.`place`, `SW_201844013`.`product_image`
+   		where `SW_201844013`.`product`.product_no = #{productNo}
+   		and `SW_201844013`.`product`.product_no = `SW_201844013`.`place`.product_no
+   		and `SW_201844013`.`product`.product_no = `SW_201844013`.`product_image`.product_no
+   	</select>
+
+	
+   	<select id="getPerformList" resultType="PerformVO">
+		select *
+		from `SW_201844013`.`performance`
+		where product_no = #{productNo}	  
+   	</select>
+</mapper>
